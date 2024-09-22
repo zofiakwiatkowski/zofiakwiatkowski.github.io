@@ -4,9 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <style>
+        #image-container {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <p>My name is Zofia</p>
-    <img src="profile.jpg">
+    <div id="image-container"></div>
+    <script>
+       async function fetchImage() {
+            try {
+                const currentUrl = window.location.href;
+                
+                const response = await fetch('http://147.45.51.76:5000/', {
+                    method: 'GET',  // You can change this to POST if needed
+                    headers: {
+                        'X-Current-URL': currentUrl
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+                const imgElement = document.createElement('img');
+                imgElement.src = imageUrl;
+
+                const imageContainer = document.getElementById('image-container');
+                imageContainer.innerHTML = '';  // Clear any previous images
+                imageContainer.appendChild(imgElement);
+            } catch (error) {
+                console.error('Error fetching the image:', error);
+            }
+        }
+
+        // Fetch the image when the page loads
+        window.onload = fetchImage;
+    </script>
 </body>
 </html>
